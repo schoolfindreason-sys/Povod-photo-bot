@@ -94,7 +94,7 @@ high-end commercial photography.
 
 У неё:
 
-длинные РАСПУЩЕННЫЕ волосы;
+длинные распущенные волосы;
 
 объёмная профессиональная укладка;
 
@@ -120,7 +120,7 @@ beauty/lifestyle фотосессию.
 
 ОДЕЖДА — ОБЯЗАТЕЛЬНЫЙ ОБРАЗ
 
-Модель одета в элегантный СВЕТЛЫЙ КРЕМОВЫЙ ЖАКЕТ
+Модель одета в элегантный светлый кремовый жакет
 или костюм оттенка warm ivory / cream / champagne.
 
 Основной предпочтительный цвет одежды — CREAM / IVORY.
@@ -469,7 +469,7 @@ async def telegram_webhook(
 
 
 # ============================================================
-# STARTUP / SHUTDOWN
+# STARTUP
 # ============================================================
 
 @web.on_event("startup")
@@ -484,7 +484,7 @@ async def startup_event():
 
     await telegram_app.bot.set_webhook(
         url=WEBHOOK_URL,
-        drop_pending_updates=True,
+        drop_pending_updates=False,
     )
 
     logger.info(
@@ -493,19 +493,21 @@ async def startup_event():
     )
 
 
+# ============================================================
+# SHUTDOWN
+# IMPORTANT:
+# DO NOT DELETE THE TELEGRAM WEBHOOK HERE.
+# Render Free may put the service to sleep.
+# The webhook must remain registered so Telegram can wake it.
+# ============================================================
+
 @web.on_event("shutdown")
 async def shutdown_event():
 
     logger.info(
-        "Stopping Telegram application"
+        "Stopping Telegram application "
+        "without deleting webhook"
     )
-
-    try:
-        await telegram_app.bot.delete_webhook()
-    except Exception:
-        logger.exception(
-            "Could not delete Telegram webhook"
-        )
 
     await telegram_app.stop()
     await telegram_app.shutdown()
